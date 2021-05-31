@@ -6,7 +6,7 @@ This is a demo application written in Xamarin.Forms, it generates dynamic forms 
 
 - Generate dynamic forms based on API response.
 - Has a common UI utility class which can be reused among different pages to generate dynamic forms.
-- It also has unit tests for testing the user code.
+- It has unit tests written using NUnit framework, for testing the user code.
 
 ## Demo by:
 
