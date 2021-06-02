@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NeoDemoXam.View.MainPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Button Text="Go To Music Form" Clicked="Button_Clicked_One" />
+            <Button Text="Go To Dance Form" Clicked="Button_Clicked_Two" />
+            <Button Text="Go To Drama Form" Clicked="Button_Clicked_Three" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

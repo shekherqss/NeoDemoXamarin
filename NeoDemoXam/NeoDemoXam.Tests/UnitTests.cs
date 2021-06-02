@@ -1,3 +1,4 @@
+using NeoDemoXam.Bootstrap;
 using NeoDemoXam.Constants;
 using NeoDemoXam.Core.Template;
 using NeoDemoXam.UI.Controls;
@@ -8,7 +9,6 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace NeoDemoXam.Tests
@@ -19,6 +19,7 @@ namespace NeoDemoXam.Tests
         public void Setup()
         {
             Xamarin.Forms.Mocks.MockForms.Init();
+            AppContainer.RegisterDependencies();
         }
 
         [Test]
@@ -27,10 +28,10 @@ namespace NeoDemoXam.Tests
             //Arrange
             var resourceId = Guid.NewGuid().ToString();
             var inputField = new Field() { Label = "FirstName", FieldResourceId = resourceId, SelectedValue = string.Empty, Type = "textbox", Values = null };
-            var uIUtilities = new UIUtilities<FillDetailsTypeOneViewModelSharp>(new FillDetailsTypeOneViewModelSharp());
+            var viewUtitlity = AppContainer.Resolve<IUIUtility<FillDetailsTypeMusicViewModelSharp>>();
 
             //Act
-            var controlLayout = uIUtilities.AddTextboxField(inputField);
+            var controlLayout = viewUtitlity.AddTextboxField(inputField);
             var generatedControl = ((controlLayout.Children[1])).GetType();
 
             //Assert
@@ -44,10 +45,10 @@ namespace NeoDemoXam.Tests
             //Arrange
             var resourceId = Guid.NewGuid().ToString();
             var inputField = new Field() { Label = "FirstName", FieldResourceId = resourceId, SelectedValue = string.Empty, Type = "textbox", Values = null };
-            var uIUtilities = new UIUtilities<FillDetailsTypeOneViewModelSharp>(new FillDetailsTypeOneViewModelSharp());
+            var viewUtitlity = AppContainer.Resolve<IUIUtility<FillDetailsTypeMusicViewModelSharp>>();
 
             //Act
-            var controlLayout = uIUtilities.AddTextboxField(inputField);
+            var controlLayout = viewUtitlity.AddTextboxField(inputField);
             var generatedControl = ((controlLayout.Children[0])).GetType();
 
             //Assert
@@ -61,10 +62,10 @@ namespace NeoDemoXam.Tests
             //Arrange
             var resourceId = Guid.NewGuid().ToString();
             var inputField = new Field() { Label = "FirstName", FieldResourceId = resourceId, SelectedValue = string.Empty, Type = "textbox", Values = null };
-            var uIUtilities = new UIUtilities<FillDetailsTypeOneViewModelSharp>(new FillDetailsTypeOneViewModelSharp());
+            var viewUtitlity = AppContainer.Resolve<IUIUtility<FillDetailsTypeMusicViewModelSharp>>();
 
             //Act
-            var controlLayout = uIUtilities.AddTextboxField(inputField);
+            var controlLayout = viewUtitlity.AddTextboxField(inputField);
             (controlLayout.Children[1] as TextboxControl).Text = "dummy name";
             (controlLayout.Children[1] as TextboxControl).Unfocus();
 
@@ -74,19 +75,16 @@ namespace NeoDemoXam.Tests
             Assert.AreEqual((controlLayout.Children[1] as TextboxControl).Placeholder, string.Format("{0} {1}", "Enter", inputField.Label));
         }
 
-
-
-
         [Test]
         public void ADD_DROPDOWN_CUSTOM_CONTROL_METHOD_IS_ADDING_CORRECT_CONTROL()
         {
             //Arrange
             var resourceId = Guid.NewGuid().ToString();
             var inputField = new Field() { Label = "Numbers", FieldResourceId = resourceId, SelectedValue = string.Empty, Type = "dropdown", Values = new string[] { "ONE", "TWO" } };
-            var uIUtilities = new UIUtilities<FillDetailsTypeOneViewModelSharp>(new FillDetailsTypeOneViewModelSharp());
+            var viewUtitlity = AppContainer.Resolve<IUIUtility<FillDetailsTypeMusicViewModelSharp>>();
 
             //Act
-            var controlLayout = uIUtilities.AddDropdownField(inputField);
+            var controlLayout = viewUtitlity.AddDropdownField(inputField);
             var generatedControl = ((controlLayout.Children[1])).GetType();
 
             //Assert
@@ -100,10 +98,10 @@ namespace NeoDemoXam.Tests
             //Arrange
             var resourceId = Guid.NewGuid().ToString();
             var inputField = new Field() { Label = "Numbers", FieldResourceId = resourceId, SelectedValue = string.Empty, Type = "dropdown", Values = new string[] { "ONE", "TWO" } };
-            var uIUtilities = new UIUtilities<FillDetailsTypeOneViewModelSharp>(new FillDetailsTypeOneViewModelSharp());
+            var viewUtitlity = AppContainer.Resolve<IUIUtility<FillDetailsTypeMusicViewModelSharp>>();
 
             //Act
-            var controlLayout = uIUtilities.AddDropdownField(inputField);
+            var controlLayout = viewUtitlity.AddDropdownField(inputField);
             var generatedControl = ((controlLayout.Children[0])).GetType();
 
             //Assert
@@ -117,10 +115,10 @@ namespace NeoDemoXam.Tests
             //Arrange
             var resourceId = Guid.NewGuid().ToString();
             var inputField = new Field() { Label = "Numbers", FieldResourceId = resourceId, SelectedValue = string.Empty, Type = "dropdown", Values = new string[] { "ONE", "TWO" } };
-            var uIUtilities = new UIUtilities<FillDetailsTypeOneViewModelSharp>(new FillDetailsTypeOneViewModelSharp());
+            var viewUtitlity = AppContainer.Resolve<IUIUtility<FillDetailsTypeMusicViewModelSharp>>();
 
             //Act
-            var controlLayout = uIUtilities.AddDropdownField(inputField);
+            var controlLayout = viewUtitlity.AddDropdownField(inputField);
 
             //Assert
             Assert.AreEqual((controlLayout.Children[0] as LabelControl).Text, inputField.Label);
@@ -135,11 +133,12 @@ namespace NeoDemoXam.Tests
         public void CHECK_PAGE_HAS_CORRECT_PAGE_TITLE_AND_HAS_A_SUBMIT_BUTTON()
         {
             //Arrange
-            FillDetailsTypeOne page = new FillDetailsTypeOne();
+            FillDetailsTypeMusic page = new FillDetailsTypeMusic();
+            page.BindReferences();
             page.LoadPageSettings();
 
             //Action
-            var deserilzedResp = JsonConvert.DeserializeObject<PageTemplate>(CoreConstants.DefaultSerializedJson);
+            var deserilzedResp = JsonConvert.DeserializeObject<PageTemplate>(CoreConstants.DefaultSerializedJsonMusic);
             var content = page.Content as StackLayout;
             var chCount = content.Children.Count;
             var btnValue = (((content.Children[chCount - 1]) as StackLayout).Children[0] as SubmitButton).Text;
@@ -156,27 +155,28 @@ namespace NeoDemoXam.Tests
         public void CHECK_PAGE_HAS_CORRECT_FORM_LAYOUT_BASED_ON_API_RESPONSE()
         {
             //Arrange
-            FillDetailsTypeOne page = new FillDetailsTypeOne();
+            FillDetailsTypeMusic page = new FillDetailsTypeMusic();
+            page.BindReferences();
             page.LoadPageSettings();
 
             //Action
-            var deserilzedResp = JsonConvert.DeserializeObject<PageTemplate>(CoreConstants.DefaultSerializedJson);
+            var deserilzedResp = JsonConvert.DeserializeObject<PageTemplate>(CoreConstants.DefaultSerializedJsonMusic);
             var content = page.Content as StackLayout;
             var chCount = content.Children.Count;
 
 
             //Assert
             Assert.AreEqual(((content.Children[1] as StackLayout).Children[1]).GetType(), typeof(TextboxControl));
-            Assert.AreEqual(((content.Children[1] as StackLayout).Children[1] as TextboxControl).ControlResourceId, page.ViewModel.PageTemplateInput.Fields[0].FieldResourceId);
+            Assert.AreEqual(((content.Children[1] as StackLayout).Children[1] as TextboxControl).ControlResourceId, page.viewUtility.ViewModel.PageTemplateInput.Fields[0].FieldResourceId);
 
             Assert.AreEqual(((content.Children[2] as StackLayout).Children[1]).GetType(), typeof(DropdownControls));
-            Assert.AreEqual(((content.Children[2] as StackLayout).Children[1] as DropdownControls).ControlResourceId, page.ViewModel.PageTemplateInput.Fields[1].FieldResourceId);
+            Assert.AreEqual(((content.Children[2] as StackLayout).Children[1] as DropdownControls).ControlResourceId, page.viewUtility.ViewModel.PageTemplateInput.Fields[1].FieldResourceId);
 
             Assert.AreEqual(((content.Children[3] as StackLayout).Children[1]).GetType(), typeof(DropdownControls));
-            Assert.AreEqual(((content.Children[3] as StackLayout).Children[1] as DropdownControls).ControlResourceId, page.ViewModel.PageTemplateInput.Fields[2].FieldResourceId);
+            Assert.AreEqual(((content.Children[3] as StackLayout).Children[1] as DropdownControls).ControlResourceId, page.viewUtility.ViewModel.PageTemplateInput.Fields[2].FieldResourceId);
 
             Assert.AreEqual(((content.Children[4] as StackLayout).Children[1]).GetType(), typeof(TextboxControl));
-            Assert.AreEqual(((content.Children[4] as StackLayout).Children[1] as TextboxControl).ControlResourceId, page.ViewModel.PageTemplateInput.Fields[3].FieldResourceId);
+            Assert.AreEqual(((content.Children[4] as StackLayout).Children[1] as TextboxControl).ControlResourceId, page.viewUtility.ViewModel.PageTemplateInput.Fields[3].FieldResourceId);
         }
 
         [Test]
@@ -184,15 +184,16 @@ namespace NeoDemoXam.Tests
         {
 
             //Arrange
-            FillDetailsTypeOne page = new FillDetailsTypeOne();
+            FillDetailsTypeMusic page = new FillDetailsTypeMusic();
+            page.BindReferences();
             page.LoadPageSettings();
             var content = page.Content as StackLayout;
             var control = ((content.Children[1] as StackLayout).Children[1] as TextboxControl);
 
             //Act
             control.Text = "dummy";
-            page.uIUtilities.Textbox_UnFocused(control, null);
-            var value = page.ViewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == control.ControlResourceId).FirstOrDefault().SelectedValue;
+            page.viewUtility.Textbox_UnFocused(control, null);
+            var value = page.viewUtility.ViewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == control.ControlResourceId).FirstOrDefault().SelectedValue;
 
             //Assert
             Assert.AreEqual("dummy", value);
@@ -205,15 +206,16 @@ namespace NeoDemoXam.Tests
         {
 
             //Arrange
-            FillDetailsTypeOne page = new FillDetailsTypeOne();
+            FillDetailsTypeMusic page = new FillDetailsTypeMusic();
+            page.BindReferences();
             page.LoadPageSettings();
             var content = page.Content as StackLayout;
             var control = ((content.Children[2] as StackLayout).Children[1] as DropdownControls);
 
             //Act
             control.SelectedItem = "Jazz";
-            page.uIUtilities.Picker_SelectedIndexChanged(control, null);
-            var value = page.ViewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == control.ControlResourceId).FirstOrDefault().SelectedValue;
+            page.viewUtility.Picker_SelectedIndexChanged(control, null);
+            var value = page.viewUtility.ViewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == control.ControlResourceId).FirstOrDefault().SelectedValue;
 
             //Assert
             Assert.AreEqual("Jazz", value);

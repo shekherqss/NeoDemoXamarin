@@ -1,19 +1,18 @@
 ﻿using NeoDemoXam.Core.Template;
 using NeoDemoXam.UI.Controls;
+using NeoDemoXam.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xamarin.Forms;
 
 namespace NeoDemoXam.UI.Utils
 {
-    public class UIUtilities<TViewModel> where TViewModel : NeoDemoXam.ViewModel.BaseViewModel
+    public class UIUtility<TViewModel> : IUIUtility<TViewModel> where TViewModel : BaseViewModel, new()
     {
-        private readonly TViewModel _viewModel;
-        public UIUtilities(TViewModel viewModel)
+        public TViewModel ViewModel { get; set; }
+        public UIUtility()
         {
-            _viewModel = viewModel;
+            ViewModel = new TViewModel();
         }
 
         /// <summary>
@@ -56,7 +55,7 @@ namespace NeoDemoXam.UI.Utils
         {
             DropdownControls picker = new DropdownControls
             {
-                Title = string.Format("{0} {1}","Select", field.Label),
+                Title = string.Format("{0} {1}", "Select", field.Label),
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
@@ -90,10 +89,10 @@ namespace NeoDemoXam.UI.Utils
             var control = (DropdownControls)sender;
             var fieldResourceId = (control).ControlResourceId;
             var selectedValue = (control).SelectedItem.ToString();
-            var record = _viewModel.PageTemplateInput.Fields.ToList().Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
+            var record = ViewModel.PageTemplateInput.Fields.ToList().Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
             record.SelectedValue = selectedValue;
             var check = record.SelectedValue;
-            var viewModelField = _viewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
+            var viewModelField = ViewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
             viewModelField.SelectedValue = selectedValue;
         }
 
@@ -112,10 +111,10 @@ namespace NeoDemoXam.UI.Utils
             var control = (TextboxControl)sender;
             var fieldResourceId = (control).ControlResourceId;
             var selectedValue = Convert.ToString((control).Text);
-            var record = _viewModel.PageTemplateInput.Fields.ToList().Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
+            var record = ViewModel.PageTemplateInput.Fields.ToList().Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
             record.SelectedValue = selectedValue;
             var check = record.SelectedValue;
-            var viewModelField = _viewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
+            var viewModelField = ViewModel.PageTemplateInput.Fields.Where(x => x.FieldResourceId == fieldResourceId).FirstOrDefault();
             viewModelField.SelectedValue = selectedValue;
         }
     }

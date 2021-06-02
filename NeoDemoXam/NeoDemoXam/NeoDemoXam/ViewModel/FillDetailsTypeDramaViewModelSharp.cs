@@ -11,9 +11,13 @@ using Xamarin.Forms;
 
 namespace NeoDemoXam.ViewModel
 {
-    public class FillDetailsTypeOneViewModelSharp : BaseViewModel, INotifyPropertyChanged
+    public class FillDetailsTypeDramaViewModelSharp : BaseViewModel, INotifyPropertyChanged
     {
-        public FillDetailsTypeOneViewModelSharp()
+        public FillDetailsTypeDramaViewModelSharp()
+        {           
+        }
+
+        public void LoadData()
         {
             Task.Run(async () =>
             {
@@ -30,7 +34,7 @@ namespace NeoDemoXam.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string _serializedJson = CoreConstants.DefaultSerializedJson;
+        private string _serializedJson = CoreConstants.DefaultSerializedJsonDrama;
         public string SerializedJson
         {
             get
