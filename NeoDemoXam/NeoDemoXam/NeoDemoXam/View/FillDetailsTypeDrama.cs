@@ -1,4 +1,5 @@
-﻿using NeoDemoXam.Core.Template;
+﻿using NeoDemoXam.Bootstrap;
+using NeoDemoXam.Core.Template;
 using NeoDemoXam.UI.Controls;
 using NeoDemoXam.UI.Utils;
 using NeoDemoXam.ViewModel;
@@ -11,20 +12,8 @@ using Xamarin.Forms;
 
 namespace NeoDemoXam.View
 {
-    public class FillDetailsTypeOne : ContentPage
+    public class FillDetailsTypeDrama : ContentPage
     {
-        /// <summary>
-        /// This is model which holds the API response which has the data to build dynamic form of this page.
-        /// </summary>
-        public PageTemplate template;
-        public FillDetailsTypeOneViewModelSharp ViewModel;
-
-        /// <summary>
-        /// This is a reference to a utility class which has the methods to create the "control" objects, it also maps the field data received from the API response to the created "controls" objects.
-        /// </summary>
-        public UIUtilities<FillDetailsTypeOneViewModelSharp> uIUtilities;
-
-
         /// <summary>
         /// property is used to check for initial load; 
         /// 'True' = It's true by default signifying that initial load hasn't happened yet.
@@ -32,21 +21,38 @@ namespace NeoDemoXam.View
         /// </summary>
         private bool _isInitialLoad = true;
 
-        public FillDetailsTypeOne()
+        /// <summary>
+        /// This is a reference to a utility class which has the methods to create the "control" objects, it also maps the field data received from the API response to the created "controls" objects.
+        /// </summary>
+        public IUIUtility<FillDetailsTypeDramaViewModelSharp> viewUtility;
+
+        /// <summary>
+        /// This is model which holds the API response which has the data to build dynamic form of this page.
+        /// </summary>
+        public PageTemplate template;
+
+
+        public FillDetailsTypeDrama()
         {
-            NavigationPage.SetHasNavigationBar(this, false);
-            template = null; //resetting the page template;
-            //BindingContext = new  FillDetailsTypeOneViewModelSharp(); // binding the viewmodel's context
-            ViewModel = new FillDetailsTypeOneViewModelSharp();
         }
 
         protected override void OnAppearing()
         {
+            BindReferences();
             LoadPageSettings();
             base.OnAppearing();
         }
 
-        /// <summary>
+        public void BindReferences()
+        {
+            var _viewUtility = AppContainer.Resolve<IUIUtility<FillDetailsTypeDramaViewModelSharp>>();
+            viewUtility = _viewUtility;
+            BindingContext = viewUtility.ViewModel;
+        }
+
+
+
+        // <summary>
         /// It's used to check whether page's controls details has been received from the api.
         /// If not, it waits for it to arrive.
         /// Once received it call's InitializeView() to process the page's controls.
@@ -55,10 +61,10 @@ namespace NeoDemoXam.View
         {
             if (_isInitialLoad)
             {
-                while (template == null) // wait till the data from api is getting loaded.
+                (BindingContext as FillDetailsTypeDramaViewModelSharp).LoadData();
+                while (template == null)
                 {
-                    template = ViewModel.PageTemplateInput; // show loader till data is getting loaded    
-                    uIUtilities = new UIUtilities<FillDetailsTypeOneViewModelSharp>(ViewModel); // passing
+                    template = viewUtility.ViewModel.PageTemplateInput;
                 }
 
                 InitializeView(template); // load controls based on the response from the api                               
@@ -87,15 +93,15 @@ namespace NeoDemoXam.View
                 switch (field.Type)
                 {
                     case "textbox":
-                        parentLayout.Children.Add(uIUtilities.AddTextboxField(field));
+                        parentLayout.Children.Add(viewUtility.AddTextboxField(field));
                         break;
 
                     case "dropdown":
-                        parentLayout.Children.Add(uIUtilities.AddDropdownField(field));
+                        parentLayout.Children.Add(viewUtility.AddDropdownField(field));
                         break;
 
                     case "numericTextBox":
-                        parentLayout.Children.Add(uIUtilities.AddTextboxField(field, true));
+                        parentLayout.Children.Add(viewUtility.AddTextboxField(field, true));
                         break;
                 }
             }
@@ -104,7 +110,7 @@ namespace NeoDemoXam.View
             {
                 VerticalOptions = LayoutOptions.EndAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children = { new SubmitButton() { Command = ViewModel.SubmitCommand } }
+                Children = { new SubmitButton() { Command = viewUtility.ViewModel.SubmitCommand } }
 
             });
 
